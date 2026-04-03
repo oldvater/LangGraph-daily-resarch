@@ -1,4 +1,3 @@
-import os
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain.agents import create_agent
