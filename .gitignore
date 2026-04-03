@@ -1,0 +1,17 @@
+# 1. 核心机密（绝对隔离）
+.env
+*.key
+
+# 2. 虚拟环境（太大了，别人 clone 下来自己会装）
+.venv1/
+venv1/
+env1/
+
+# 3. Python 运行时缓存（没用的二进制垃圾）
+__pycache__/
+*.pyc
+*.pyo
+
+# 4. OS 和 IDE 自动生成的系统文件
+.DS_Store
+.vscode/
