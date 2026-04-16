@@ -1,5 +1,17 @@
-from typing import Any, TypedDict, Annotated
+from typing import Any, TypedDict, Annotated, Optional
 import operator
+#当不通过时，清空已有的deep_dives
+def clearable_add(left: list | None, right: list | str | None):
+    if right == "CLEAR":
+        return []
+    
+    if left is None:
+        left = []
+    if right is None:
+        right = []
+    if isinstance(right, list):
+        return left + right
+    return left
 
 
 class IntelligenceState(TypedDict):
@@ -8,7 +20,7 @@ class IntelligenceState(TypedDict):
     #lanner 从 raw_feeds 提炼出的核心主题。
     themes: list[str]
     #各个 Executor 矿工挖回来的深度笔记。
-    deep_dives: Annotated[list[dict], operator.add]
+    deep_dives: Annotated[list[dict], clearable_add]
     #主编最后生成的报告草稿
     draft: str
     #审查官打回时的批评意见
@@ -21,3 +33,4 @@ class IntelligenceState(TypedDict):
 class ExecutorPayload(TypedDict):
     """专门用来包裹派发给单个 Executor 任务的数据结构"""
     topic: str
+    feedback: Optional[str]

@@ -18,7 +18,12 @@ llm = ChatOpenAI(
 # 注意！入参变了！它不再接受大字典，而是接收针对它的那一份"专题小字典"
 async def executor_node(payload: ExecutorPayload) -> dict[str, Any]:
     current_topic = payload["topic"]
+    feedback = payload.get("feedback", "")
+
     print(f"====== [NODE] Executor 异步启动专列：主题 '{current_topic}' ======")
+
+    if feedback:
+        print(print(f"  -> 带着审查官任务归来，需重点深挖！"))
 
     tools = get_intelligence_tools()
 
@@ -37,7 +42,10 @@ async def executor_node(payload: ExecutorPayload) -> dict[str, Any]:
         system_prompt=system_message
         )
     
-    human_req = HumanMessage(content=f"请尽你所能去搜索和挖掘关于 {current_topic} 的资料吧！必须使用工具。最多查询2次。")
+    base_req = f"请尽你所能去搜索和挖掘关于 {current_topic} 的资料吧！必须使用工具。最多查询2次。"
+    if feedback:
+        base_req += f"\n\n注意！之前你找的资料被审查官打回了，原因是：\n【{feedback}】\n请针对以上缺陷，重点使用工具搜索补充缺失的信息！"
+    human_req = HumanMessage(content=base_req)
 
     try:
         # ainvoke 是异步执行！特种兵进入循环状态。

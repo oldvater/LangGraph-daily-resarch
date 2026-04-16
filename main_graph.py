@@ -37,7 +37,19 @@ def should_continue(state: IntelligenceState):
         return END
     else:
         print("【全线打回】报告太水，清空草稿，通知 Executor 重新使用更刁钻的搜索关键词深挖原出处！")
-        return "executor"
+
+        themes = state.get("themes", [])
+        feedback = state.get("feedback", "")
+
+        send_missiles = []
+
+        for theme in themes:
+            payload = {"topic":theme, "feedback": feedback}
+
+            missile = Send("executor", payload)
+            send_missiles.append(missile)
+
+        return send_missiles
 
 def compile_graph():
     workflow = StateGraph(IntelligenceState)

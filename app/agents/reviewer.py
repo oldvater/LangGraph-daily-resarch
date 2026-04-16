@@ -58,8 +58,13 @@ async def reviewer_node(state: IntelligenceState) -> dict[str, Any]:
     # 把 review_result里的 is_pass, feedback，以及 current_revision + 1 组装成字典 return 出去。
     print(f"[Reviewer] 审阅结果：{'✅ 通过' if is_pass else '❌ 打回'}。反馈：{feedback}")
 
-    return {
+    update_state = {
         "is_pass": is_pass,
         "feedback": feedback,
         "revision_count": 1
         }
+    
+    if not is_pass:
+        update_state["deep_dives"] = "CLEAR"
+        
+    return update_state
